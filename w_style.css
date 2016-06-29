@@ -7,6 +7,33 @@ a:hover{
     text-decoration: none;
 }
 
+select {
+    border-radius: 0;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    outline: none;
+    transition: all .15s linear 0;
+}
+
+select:focus {
+    outline-color: #f37423;
+    outline-offset: 0px;
+    outline-style: solid;
+    outline-width: 4px;
+}
+
+input{
+    outline: none !important;
+    transition: all .15s linear 0;
+}
+
+input:focus {
+    outline-color: #f37423 !important;
+    outline-offset: 0 !important;
+    outline-style: outset !important;
+    outline-width: medium !important;
+}
+
 .b-timepad-logo-icon img{
         width:100px;
         filter:invert(100%);
