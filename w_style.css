@@ -24,14 +24,16 @@ select:focus {
 
 input{
     outline: none !important;
-    transition: all .15s linear 0;
+    transition: all .15s linear 0 !important;
 }
 
 input:focus {
     outline-color: #f37423 !important;
-    outline-offset: 0 !important;
-    outline-style: outset !important;
-    outline-width: medium !important;
+    outline-offset: -1px !important;
+    outline-style: solid !important;
+    outline-width: 4px !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
 .b-timepad-logo-icon img{
