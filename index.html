@@ -43,7 +43,7 @@
             l = this.mklog('custom');
 
         w.obs.listen( 'postRepaint' , function () {
-            // w.$$('.js-section-selectTickets').hide();
+            w.$$('.js-section-selectTickets').hide();
             w.$$('.js-select-age, .js-select-count').change(catReSelect);
             w.$$('.b-smsk-cat').on('more-tickets-event', function () { //нажата кнопка добавить билеты
                 w.$$('.js-select-age').change(drop_amount);
