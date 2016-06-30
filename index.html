@@ -41,26 +41,15 @@
 
         var w = this,
             l = this.mklog('custom');
-
         w.obs.listen( 'postRepaint' , function () {
             w.$$('.js-section-selectTickets').hide();
             w.$$('.js-select-age').change(drop_amount);
-            w.$$('.js-select-count').change(catReSelect);
+            w.$$('.js-select-count').change(tickets_selection);
             w.$$('.b-smsk-cat').on('more-tickets-event', function () { //нажата кнопка добавить билеты
                 w.$$('.js-select-age').change(drop_amount);
                 w.$$('.js-select-count').change(tickets_selection); //изменено кол-во
             });
         });
-        
-        function add_options(){
-          var id  = $v.val(),
-              array_of_tickets_obj = w.model.event.tickets,
-              max;
-          max = +array_of_tickets_obj.filter( function(elem){ return elem.id == id } )[0].max;
-          for (var i = 1; i <= max; i++) {
-            $v.parents('.js-b-cat-select').find('.js-select-count').append('<option value="'+i+'">'+i+'</option>');
-          }
-        } 
         
         
         function tickets_selection() {
@@ -71,35 +60,17 @@
             values_to_main_input(input_data); // не нулевые вносим в скрытую таблицу
             reduce_selected_tickets_info();
         }
-
-        function catReSelect() {
-            // l('Reselecting categories');
-            // w.$$('.b-reg-table__cell .b-reg-table__select').val(0);
-            // var catId = w.$$('.js-select-age').val();
-
-            // w.$$('.b-reg-table__select[data-reid="'+ catId +'"]')
-            //     .val( w.$$('.js-select-count').val() )
-            //     .change()
-            // ;
-            // reduce_selected_tickets_info();
-            w.$$('.b-smsk-cat').trigger('more-tickets-event')
-        }
         
         function drop_amount(){
           var  $v = w.T$(this),
                $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count').val(),
-               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max
-               l('Here we go \n');
-               l(max);
-               l($v.parents('.js-b-cat-select').find('.js-select-count').html());
+               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
+               
+               w.T$(this).parents('.js-b-cat-select').find('.js-select-count').html('');
+               $v.parents('.js-b-cat-select').find('.js-select-count').append('<option value="' + 0 + '">&mdash; </option>');
                for (var i=1; i <= max; i++) {
                  $v.parents('.js-b-cat-select').find('.js-select-count').append('<option value="' + i + '">' + i + '</option>');
-               };
-              // add_options();
-          // add_options();
-          if (parseInt($v_am) > 0) {
-            $v.parents('.js-b-cat-select').find('.js-select-count').val(0).change();
-          }
+               }
         }
         
         function take_values(id){
@@ -378,8 +349,8 @@
                 <div class="b-input-block i-question-control">
                     <select class="b-smsk-cat__select-amount
                                    js-select-count">
- <option value="0">&mdash;</option>
-     <!-- <option value="1">1</option>
+ <!-- <option value="0">&mdash;</option>
+      <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>
     <option value="4">4</option>
