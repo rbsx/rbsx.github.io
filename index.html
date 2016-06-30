@@ -63,14 +63,25 @@
         
         function drop_amount(){
           var  $v = w.T$(this),
-               $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count').val(),
+               $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count'),
                max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
-               
-               w.T$(this).parents('.js-b-cat-select').find('.js-select-count').html('');
-               $v.parents('.js-b-cat-select').find('.js-select-count').append('<option value="' + 0 + '">&mdash; </option>');
-               for (var i=1; i <= max; i++) {
-                 $v.parents('.js-b-cat-select').find('.js-select-count').append('<option value="' + i + '">' + i + '</option>');
-               }
+          
+          $v_am.val(0).change();
+          reduce_selected_tickets_info();
+          
+          $v.parents('.js-b-cat-select')
+            .find('.js-select-count')
+            .html('');
+           
+          $v.parents('.js-b-cat-select')
+            .find('.js-select-count')
+            .append('<option value="' + 0 + '">&mdash; </option>');
+           
+          for (var i=1; i <= max; i++) {
+           $v.parents('.js-b-cat-select')
+             .find('.js-select-count')
+             .append('<option value="' + i + '">' + i + '</option>');
+          }
         }
         
         function take_values(id){
@@ -96,7 +107,8 @@
                 l('comes into VtoM');
                 l(i + ' <<_>> ' + e);
                 if (e>0) {
-                    w.$$('.b-reg-table__select[data-reid="'+ e +'"]').val( i ).change();
+                  l('e > 0 >>');
+                  w.$$('.b-reg-table__select[data-reid="'+ e +'"]').val( i ).change();
                 }
             });
         }
@@ -107,7 +119,7 @@
             var new_text = current_text[ +current_text.indexOf('сумму')+1 ];
             l(new_text);
             if (isNaN(parseInt(new_text))) {
-              w.$$('selectedTicketsInfo').hide();
+              w.$$('.b-smsk-cat__sum').text('');
             } else {
               w.$$('.b-smsk-cat__sum').text(new_text);
             }
