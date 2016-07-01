@@ -38,26 +38,25 @@
 
     <script type="text/javascript">
     var pseudo_code_ts = function() {
-
         var w = this,
-            l = this.mklog('custom'),
-            input_data = [];
+            l = this.mklog('custom');
+            
         w.obs.listen( 'postRepaint' , function () {
             w.$$('.js-section-selectTickets').hide();
             w.$$('.js-select-age').change(amount_controller);
             w.$$('.js-select-count').change(tickets_selection);
             w.$$('.b-smsk-cat').on('more-tickets-event', function () { //нажата кнопка добавить билеты
+                w.$$('.js-select-age').focus(categories_controller);
                 w.$$('.js-select-age').change(amount_controller);
                 w.$$('.js-select-count').change(tickets_selection); //изменено кол-во
-                w.$$('.js-select-age').focus(categories_controller);
             });
         });
         
         
         function tickets_selection() {
-            var inputs = w.$$(".b-smsk-cat"); //собираем все инпуты
-            
-            w.$$('.b-reg-table__select').val(0);
+            var inputs = w.$$(".b-smsk-cat"), //собираем все инпуты
+                input_data = [];
+        
             input_data = take_values(inputs); // собираем выбранные данные и вносим в массив складывая одинаковые поля
             values_to_main_input(input_data); // не нулевые вносим в скрытую таблицу
             reduce_selected_tickets_info();
@@ -79,12 +78,7 @@
         function amount_controller(){
           var  $v = w.T$(this),
                $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count'),
-               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max,
-               current_amount,
-               $ids = w.$$('.b-reg-table__select')
-          
-          l('ids \n' + $ids.val());
-          
+               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
           
           $v_am.val(0).change();
           reduce_selected_tickets_info();
@@ -124,21 +118,15 @@
 
         function values_to_main_input(arr){
             arr.forEach(function(i,e,a){
-                l('comes into VtoM');
-                l(i + ' <<_>> ' + e);
-                if (i>0) {
+                if (e>0) {
                   w.$$('.b-reg-table__select[data-reid="'+ e +'"]').val( i ).change();
-                  w.$$('.js-select-age option[value="' + e + '"]').data('selected', true);
-                  l(w.$$('.js-select-age option[value="' + e + '"]').data('selected') );
                 }
-                // w.$$('.js-select-age option[value="' + e +'"]').attr("disabled", "disabled");
-                
             });
         }
 
         function reduce_selected_tickets_info() { /* ломается, если выбрать пустую категорию */
-            var current_text = w.$$('.selectedTicketsInfo').text().split(' ');
-            var new_text = current_text[ +current_text.indexOf('сумму')+1 ];
+            var current_text = w.$$('.selectedTicketsInfo').text().split(' '),
+                new_text = current_text[ +current_text.indexOf('сумму')+1 ];
             if (isNaN(parseInt(new_text))) {
               w.$$('.b-smsk-cat__sum').text('');
             } else {
@@ -148,10 +136,9 @@
 
         function show_existed_elements(arr){
             return arr.filter(function(element){
-                return element; /* ouch */
+                return element;
             });
         }
-        
     };
 
     var next_ticket_load = function () {
