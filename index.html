@@ -22,7 +22,7 @@
                 ],
                 "bindEvents": {
                     "iframeModeReady": "pseudo_code_ts",
-                    "postRepaint":"next_ticket_load"
+                    "postRepaint": "next_ticket_load"
                 },
                 "overrideTemplates": {
                     "main":             "#tplMain",
@@ -40,31 +40,51 @@
     var pseudo_code_ts = function() {
 
         var w = this,
-            l = this.mklog('custom');
+            l = this.mklog('custom'),
+            input_data = [];
         w.obs.listen( 'postRepaint' , function () {
             w.$$('.js-section-selectTickets').hide();
-            w.$$('.js-select-age').change(drop_amount);
+            w.$$('.js-select-age').change(amount_controller);
             w.$$('.js-select-count').change(tickets_selection);
             w.$$('.b-smsk-cat').on('more-tickets-event', function () { //нажата кнопка добавить билеты
-                w.$$('.js-select-age').change(drop_amount);
+                w.$$('.js-select-age').change(amount_controller);
                 w.$$('.js-select-count').change(tickets_selection); //изменено кол-во
+                w.$$('.js-select-age').focus(categories_controller);
             });
         });
         
         
         function tickets_selection() {
             var inputs = w.$$(".b-smsk-cat"); //собираем все инпуты
-            var input_data = [];
+            
             w.$$('.b-reg-table__select').val(0);
             input_data = take_values(inputs); // собираем выбранные данные и вносим в массив складывая одинаковые поля
             values_to_main_input(input_data); // не нулевые вносим в скрытую таблицу
             reduce_selected_tickets_info();
         }
         
-        function drop_amount(){
+        function categories_controller(){
+          var $e = w.$$(this),
+              selected_cats = w.$$('.js-select-age option:selected');
+          
+          w.$$('option').each(function(){
+            w.$$(this).attr('disabled',false);
+          });
+          
+          w.$$('.js-select-age option:selected').each(function(){
+            w.$$('option[value="' + w.T$(this).val() +'"]' ).attr('disabled', true);
+          })
+        }
+        
+        function amount_controller(){
           var  $v = w.T$(this),
                $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count'),
-               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
+               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max,
+               current_amount,
+               $ids = w.$$('.b-reg-table__select')
+          
+          l('ids \n' + $ids.val());
+          
           
           $v_am.val(0).change();
           reduce_selected_tickets_info();
@@ -91,7 +111,7 @@
             w.$$('.b-smsk-cat').each(function() {
                 category = w.T$(this).find('.js-select-age').val();
                 amount = +w.T$(this).find('.js-select-count').val();
-
+                
                 if (!result[category]) {
                     result[category] = amount;
                 } else {
@@ -106,18 +126,19 @@
             arr.forEach(function(i,e,a){
                 l('comes into VtoM');
                 l(i + ' <<_>> ' + e);
-                if (e>0) {
-                  l('e > 0 >>');
+                if (i>0) {
                   w.$$('.b-reg-table__select[data-reid="'+ e +'"]').val( i ).change();
+                  w.$$('.js-select-age option[value="' + e + '"]').data('selected', true);
+                  l(w.$$('.js-select-age option[value="' + e + '"]').data('selected') );
                 }
+                // w.$$('.js-select-age option[value="' + e +'"]').attr("disabled", "disabled");
+                
             });
         }
 
         function reduce_selected_tickets_info() { /* ломается, если выбрать пустую категорию */
             var current_text = w.$$('.selectedTicketsInfo').text().split(' ');
-            l(current_text);
             var new_text = current_text[ +current_text.indexOf('сумму')+1 ];
-            l(new_text);
             if (isNaN(parseInt(new_text))) {
               w.$$('.b-smsk-cat__sum').text('');
             } else {
@@ -130,15 +151,21 @@
                 return element; /* ouch */
             });
         }
+        
     };
 
     var next_ticket_load = function () {
         var w = this,
             l = this.mklog('custom'),
             tmpl = w.$$('.js-wrapper').html();
+            
         w.$$('.js-more-tickets').click( function () {
-            l(tmpl);
             w.$$('.js-wrapper').append(tmpl);
+            w.$$('.js-select-age option').each(function(){
+              if ( w.$$(this).data('selected') == true) {
+                w.$$(this).attr('disable',true);
+              }
+            });
             w.$$('.b-smsk-cat').trigger('more-tickets-event');
         });
     };
