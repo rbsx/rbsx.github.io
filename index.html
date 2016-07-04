@@ -79,8 +79,8 @@
           w.$$('.js-select-age option:selected').each(function(){
             w.$$('option[value="' + w.T$(this).val() +'"]' ).attr('disabled', true);
           });
-          
-          w.$$('js-select-age').trigger('focusout');
+          $e.find(':selected').attr('disabled',false);
+          w.$$('js-select-age').trigger('blur');
         }
         
         function amount_controller(){
