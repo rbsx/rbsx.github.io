@@ -21,16 +21,16 @@
                     "w_style.css"
                 ],
                 "bindEvents": {
-                    "iframeModeReady": "pseudo_code_ts",
+                "iframeModeReady": "pseudo_code_ts",
                     "postRepaint": "next_ticket_load"
                 },
                 "overrideTemplates": {
-                    "main":             "#tplMain",
-                    "_ank":             "#tpl_ank",
-                    "_order":           "#tpl_order",
-                    "_selectTickets":   "#tpl_selectTickets",
-                    "_questions":       "#tpl_questions",
-                    "_footer": "#tpl_footer"
+                                  "main":             "#tplMain",
+                                  "_ank":             "#tpl_ank",
+                                "_order":           "#tpl_order",
+                        "_selectTickets":   "#tpl_selectTickets",
+                            "_questions":       "#tpl_questions",
+                               "_footer": "#tpl_footer"
                 },
             };
         })();
@@ -38,14 +38,15 @@
 
     <script type="text/javascript">
     var pseudo_code_ts = function() {
+
         var w = this,
             l = this.mklog('custom');
-            
         w.obs.listen( 'postRepaint' , function () {
             w.$$('.js-section-selectTickets').hide();
             w.$$('.js-select-age').change(amount_controller);
             w.$$('.js-select-count').change(tickets_selection);
             w.$$('.b-smsk-cat').on('more-tickets-event', function () { //нажата кнопка добавить билеты
+            
                 w.$$('.js-select-age').focus(categories_controller);
                 w.$$('.js-select-age').change(amount_controller);
                 w.$$('.js-select-count').change(tickets_selection); //изменено кол-во
@@ -54,10 +55,15 @@
         
         
         function tickets_selection() {
-            var inputs = w.$$(".b-smsk-cat"), //собираем все инпуты
+            var inputs, //собираем все инпуты
                 input_data = [];
-        
-            input_data = take_values(inputs); // собираем выбранные данные и вносим в массив складывая одинаковые поля
+            w.$$('option:disabled').each(function(){
+              w.T$(this).attr('disabled', false);
+            });
+            inputs = w.$$(".b-smsk-cat");
+          
+            w.$$('.b-reg-table__select').val(0);
+            input_data = take_values(); // собираем выбранные данные и вносим в массив складывая одинаковые поля
             values_to_main_input(input_data); // не нулевые вносим в скрытую таблицу
             reduce_selected_tickets_info();
         }
@@ -73,6 +79,8 @@
           w.$$('.js-select-age option:selected').each(function(){
             w.$$('option[value="' + w.T$(this).val() +'"]' ).attr('disabled', true);
           });
+          
+          w.$$('js-select-age').trigger('focusout');
         }
         
         function amount_controller(){
@@ -80,7 +88,7 @@
                $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count'),
                max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
           
-          $v_am.val(0).change();
+          $v_am.val(0);
           reduce_selected_tickets_info();
           
           $v.parents('.js-b-cat-select')
@@ -98,21 +106,18 @@
           }
         }
         
-        function take_values(id){
+        function take_values(){
             var result = [],
                 category, amount;
-
             w.$$('.b-smsk-cat').each(function() {
                 category = w.T$(this).find('.js-select-age').val();
                 amount = +w.T$(this).find('.js-select-count').val();
-                
                 if (!result[category]) {
                     result[category] = amount;
                 } else {
                     result[category] += amount;
-                }
+                };
             });
-
             return result;
         }
 
@@ -135,7 +140,10 @@
         }
 
         function show_existed_elements(arr){
-            return arr.filter(function(element){
+            return arr.filter(function(element,index){
+              if (element) {
+                l(index + ' in array');
+              }
                 return element;
             });
         }
@@ -148,11 +156,11 @@
             
         w.$$('.js-more-tickets').click( function () {
             w.$$('.js-wrapper').append(tmpl);
-            w.$$('.js-select-age option').each(function(){
-              if ( w.$$(this).data('selected') == true) {
-                w.$$(this).attr('disable',true);
-              }
-            });
+            // w.$$('.js-select-age option').each(function(){
+            //   if ( w.$$(this).data('selected') == true) {
+            //     w.$$(this).attr('disable',true);
+            //   }
+            // });
             w.$$('.b-smsk-cat').trigger('more-tickets-event');
         });
     };
