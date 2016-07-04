@@ -13,7 +13,6 @@
                  data-timepad-customized="19230" 
                     data-twf2s-event--id="342159" 
                   data-timepad-widget-v2="event_register">
-
      (function() {
             return {
                 "hideFormsWhenNoTickets": true,
@@ -157,11 +156,6 @@
             
         w.$$('.js-more-tickets').click( function () {
             w.$$('.js-wrapper').append(tmpl);
-            /* w.$$('.js-select-age option').each(function(){
-               if ( w.$$(this).data('selected') == true) {
-                 w.$$(this).attr('disable',true);
-               }
-             }); */
             w.$$('.b-smsk-cat').trigger('more-tickets-event');
         });
     };
@@ -476,13 +470,6 @@
             {{/event.promocode_locked}}
         </div>
     </script>
-
- <!-- <option value="0">&mdash;</option>
-      <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    -->
 
     <script type="text/mustache" id="tpl_questions">
         <div class="control-group b-reg-row" data-formname="{{formname}}" data-tag="{{{tag}}}" data-type="{{{tag}}}">
