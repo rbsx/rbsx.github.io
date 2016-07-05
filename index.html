@@ -40,7 +40,8 @@
     var pseudo_code_ts = function() {
 
         var w = this,
-            l = this.mklog('custom');
+            l = this.mklog('custom'),
+            A = TWF2.Collections.A;
         w.obs.listen( 'postRepaint' , function () {
             w.$$('.js-section-selectTickets').hide();
             w.$$('.js-select-age').change(amount_controller);
@@ -86,7 +87,10 @@
         function amount_controller(){
           var  $v = w.T$(this),
                $v_am = w.T$(this).parents('.js-b-cat-select').find('.js-select-count'),
-               max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
+               // max = w.model.event.tickets.filter( function(elem){ return elem.id == $v.val() } )[0].max;
+               max = A.where(w.model.event.tickets,function(elem,acc ) { 
+                        return elem.id == $v.val()
+                     })[0].max;
           
           $v_am.val(0);
           reduce_selected_tickets_info();
@@ -122,9 +126,17 @@
         }
 
         function values_to_main_input(arr){
-            arr.forEach(function(i,e,a){
-                if (e>0) {
-                  w.$$('.b-reg-table__select[data-reid="'+ e +'"]').val( i ).change();
+            // arr.forEach(function(i,e,a){
+            //     if (e>0) {
+            //       w.$$('.b-reg-table__select[data-reid="'+ e +'"]').val( i ).change();
+            //     }
+            // });
+
+            A.each(arr,function(elem,i){
+                if (elem > 0) {
+                    w.$$('.b-reg-table__select[data-reid="'+ i +'"]')
+                        .val( elem )
+                        .change();
                 }
             });
         }
@@ -137,15 +149,6 @@
             } else {
               w.$$('.b-smsk-cat__sum').text(new_text);
             }
-        }
-
-        function show_existed_elements(arr){
-            return arr.filter(function(element,index){
-              if (element) {
-                l(index + ' in array');
-              }
-                return element;
-            });
         }
     };
 
